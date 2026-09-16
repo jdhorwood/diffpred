@@ -1,0 +1,71 @@
+single_task:
+  experiment_id: single_task_full
+  device: cuda
+  n_jobs: 30
+  epochs: 800
+  seeds: 1,2,3,4,5
+  tdc_datasets: lipophilicity_astrazeneca,solubility_aqsoldb,clearance_hepatocyte_az,clearance_microsome_az,vdss_lombardo,ld50_zhu
+  chembl_datasets: CHEMBL4203_Ki,CHEMBL2034_Ki,CHEMBL233_Ki,CHEMBL4616_EC50,CHEMBL287_Ki,CHEMBL218_EC50,CHEMBL264_Ki,CHEMBL219_Ki,CHEMBL2835_Ki,CHEMBL2147_Ki,CHEMBL231_Ki,CHEMBL3979_EC50,CHEMBL237_EC50,CHEMBL244_Ki,CHEMBL4792_Ki,CHEMBL1871_Ki,CHEMBL237_Ki,CHEMBL262_Ki,CHEMBL2047_EC50,CHEMBL239_EC50,CHEMBL2971_Ki,CHEMBL204_Ki,CHEMBL214_Ki,CHEMBL1862_Ki,CHEMBL234_Ki,CHEMBL238_Ki,CHEMBL235_EC50,CHEMBL4005_Ki,CHEMBL236_Ki
+  baseline_models: mlp,gcn,gin,gine,pna,chemprop
+  diff_models: simple_diff_mlp,simple_diff_gcn,simple_diff_gin,simple_diff_gine,simple_diff_pna,simple_diff_chemprop
+
+single_task_figures:
+  chembl_metrics: pearsonr
+  chembl_plot_type: violin
+  chembl_viz_dir_name: chembl_viz
+  tdc_metrics: rmse,pearsonr,r2_score
+  tdc_plot_type: box
+  tdc_viz_dir_name: adme_viz
+  tdc_datasets: lipophilicity_astrazeneca,solubility_aqsoldb,clearance_hepatocyte_az,clearance_microsome_az,vdss_lombardo,ld50_zhu
+
+single_task_additional_figures:
+  generalization_metrics: pearsonr
+  generalization_chembl_viz_dir: ma_gen_gap
+  generalization_tdc_viz_dir: tdc_gen_gap
+  activity_cliff_dataset_a: CHEMBL262_Ki
+  activity_cliff_dataset_b: CHEMBL238_Ki
+  activity_cliff_baseline_model: mlp
+  activity_cliff_diff_model: simple_diff_mlp
+  activity_cliff_seed: 1
+  activity_cliff_device: cuda
+  activity_cliff_num_refinement_steps: 50
+  activity_cliff_viz_dir: ac_trajectory
+
+multitask:
+  datasets: biogen/adme-fang-reg-v1,graphium/tox21-v1,graphium/zinc12k-v1
+  seeds: 1,2,3,4,5
+  reg_metrics: "rmse,mae"
+  reg_ranking_metric: rmse
+  clf_metrics: "pr_auc,roc_auc,mcc"
+  clf_ranking_metric: roc_auc
+
+multitask_imputation:
+  datasets: dockstring
+  ratios: 0.0,0.2,0.4,0.6,0.8
+  seeds: 1,2,3
+  models: mlp,simple_diff_mlp
+  n_jobs: 15
+  epochs: 70
+  wandb_mode: disabled
+  data_root: artifacts/data/multitask_imputation
+  results_root: artifacts/results_raw/multitask_imputation
+  output_dir: artifacts/figures/multitask_imputation
+  use_ema: true
+  disable_eval_guidance: true
+
+ablations:
+  guidance_modes:
+    experiment_id: guidance_modes_ablation
+    models: simple_diff_mlp,simple_diff_gcn
+    seeds: 0,1,2,3,4
+    guidance: 1.0
+    guidance_dropout: 0.2
+    guidance_schedule: cosine
+    molecule_ace_datasets: CHEMBL228_Ki
+    tdc_datasets: "caco2_wang,solubility_aqsoldb"
+    dockstring_datasets: "ABL1"
+    default_n_jobs: 5
+    dockstring_n_jobs: 5
+    default_max_epochs: 800
+    dockstring_max_epochs: 100
+

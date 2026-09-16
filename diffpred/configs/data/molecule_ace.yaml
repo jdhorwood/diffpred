@@ -1,0 +1,14 @@
+name: molecule_ace
+dataset: CHEMBL233_Ki
+log_transform: False
+classification: False
+standardize_targets: True
+diffusion_params:
+  guidance: 1.0
+  guidance_dropout: 0.2
+  guidance_schedule: cosine
+  diffusion_type: null
+  refinement_steps: 50
+  sigma_min: 1e-4
+  sigma_max: 20
+  self_cond_prob: 0.5

@@ -1,0 +1,31 @@
+name: gnn
+featurizer: graph
+use_mve: False
+use_mcdropout: False
+hparams:
+  net_type: pna
+  activation: silu
+  hidden_dim: 128
+  num_hiddens: 3
+  dropout: 0
+  batch_norm: False
+  pooling: sum
+  output_mlp_type: residual
+  feature_hiddens:
+    - 70
+    - 70
+    - 70
+    - 70
+  cond_config:
+    fusion_gating: False
+    fusion_loc: post-branch
+    fusion_type: none
+    use_timestep_gating: False
+training:
+  loss_weights: True
+  batch_size: 1024
+  shuffle_train: True
+  lr: 1e-3
+  batched_sampling: True
+  num_pred_samples: 100
+  max_epochs: 1000

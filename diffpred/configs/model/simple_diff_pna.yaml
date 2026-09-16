@@ -1,0 +1,31 @@
+name: pna_diff
+featurizer: graph
+hparams:
+  net_type: pna
+  arch_type: baseline # baseline diffusion
+  pooling: sum
+  activation: silu
+  dropout: 0
+  batch_norm: False
+  hidden_dim: 128
+  embedding_dim: 128
+  num_hiddens: 3
+  self_conditioning: False
+  feature_hiddens:
+    - 70
+    - 70
+    - 70
+    - 70
+  cond_config:
+    fusion_gating: False
+    fusion_loc: post-branch
+    fusion_type: none
+    use_timestep_gating: False
+training:
+  batch_size: 1024
+  shuffle_train: True
+  lr: 1e-3
+  use_scheduler: True
+  batched_sampling: True
+  num_pred_samples: 200
+  max_epochs: 1500

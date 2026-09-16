@@ -1,0 +1,28 @@
+name: mlp
+featurizer: ["ecfp:4", "rdkit"]
+use_mve: False
+use_mcdropout: False
+use_deepensemble: False
+hparams:
+  activation: silu
+  dropout: 0
+  mc_dropout: 0
+  hidden_dim: 128
+  num_hiddens: 3
+  output_mlp_type: linear
+  feature_hiddens:
+    - 256
+    - 128
+  cond_config:
+    fusion_gating: False
+    fusion_loc: post-branch
+    fusion_type: none
+    use_timestep_gating: False
+training:
+  batch_size: 1024
+  shuffle_train: True
+  lr: 1e-3
+  use_scheduler: True
+  batched_sampling: True
+  num_pred_samples: 50
+  max_epochs: 1500

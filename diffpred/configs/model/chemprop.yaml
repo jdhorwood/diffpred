@@ -1,0 +1,31 @@
+name: gnn
+featurizer: graph
+use_mve: False
+use_mcdropout: False
+use_deepensemble: False
+hparams:
+  net_type: chemprop
+  chemprop_message_passing: bond
+  chemprop_aggregation: norm
+  chemprop_depth: 3
+  pooling: sum
+  activation: silu
+  dropout: 0
+  batch_norm: False
+  hidden_dim: 128
+  num_hiddens: 3
+  output_mlp_type: residual
+  feature_hiddens:
+  - 256
+  cond_config:
+    fusion_gating: False
+    fusion_loc: post-branch
+    fusion_type: none
+    use_timestep_gating: False
+training:
+  loss_weights: True
+  batch_size: 1024
+  shuffle_train: True
+  lr: 1e-3
+  num_pred_samples: 50
+  max_epochs: 1000

@@ -1,0 +1,29 @@
+name: gps_diff
+featurizer: graph
+hparams:
+  net_type: gps
+  arch_type: baseline # baseline diffusion
+  pooling: sum
+  activation: silu
+  dropout: 0
+  norm: layer_norm
+  hidden_dim: 128
+  embedding_dim: 128
+  num_hiddens: 3
+  self_conditioning: False
+  feature_hiddens:
+    - 256
+    - 128
+  cond_config:
+    fusion_gating: False
+    fusion_loc: post-branch
+    fusion_type: none
+    use_timestep_gating: False
+training:
+  batch_size: 1024
+  shuffle_train: True
+  lr: 1e-3
+  use_scheduler: True
+  batched_sampling: True
+  num_pred_samples: 200
+  max_epochs: 1500

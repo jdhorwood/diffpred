@@ -1,0 +1,23 @@
+name: dataframe_masked_imputation
+dataset: dockstring
+log_transform: false
+use_benchmark: false
+standardize_targets: true
+symmetric_binary_targets: true
+classification: false
+split_policy: random
+sample_id_col: sample_id
+masking:
+  enabled: true
+  artifact_root: artifacts/data/multitask_imputation/dockstring
+  ratio: 0.0
+  seed: ${experiment.seed}
+diffusion_params:
+  guidance: 0.0
+  guidance_dropout: 0.2
+  guidance_schedule: cosine
+  diffusion_type: null
+  refinement_steps: 50
+  sigma_min: 1e-4
+  sigma_max: 10
+  self_cond_prob: 0.5

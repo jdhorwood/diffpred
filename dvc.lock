@@ -1,0 +1,825 @@
+schema: '2.0'
+stages:
+  single_task.raw_results:
+    cmd: "bash bin/dvc/single_task/run.sh --experiment-id single_task_full --device
+      cuda --n-jobs 30 --epochs 800 --seeds 1,2,3,4,5 --tdc-datasets lipophilicity_astrazeneca,solubility_aqsoldb,clearance_hepatocyte_az,clearance_microsome_az,vdss_lombardo,ld50_zhu
+      --chembl-datasets CHEMBL4203_Ki,CHEMBL2034_Ki,CHEMBL233_Ki,CHEMBL4616_EC50,CHEMBL287_Ki,CHEMBL218_EC50,CHEMBL264_Ki,CHEMBL219_Ki,CHEMBL2835_Ki,CHEMBL2147_Ki,CHEMBL231_Ki,CHEMBL3979_EC50,CHEMBL237_EC50,CHEMBL244_Ki,CHEMBL4792_Ki,CHEMBL1871_Ki,CHEMBL237_Ki,CHEMBL262_Ki,CHEMBL2047_EC50,CHEMBL239_EC50,CHEMBL2971_Ki,CHEMBL204_Ki,CHEMBL214_Ki,CHEMBL1862_Ki,CHEMBL234_Ki,CHEMBL238_Ki,CHEMBL235_EC50,CHEMBL4005_Ki,CHEMBL236_Ki
+      --baseline-models mlp,gcn,gin,gine,pna,chemprop --diff-models simple_diff_mlp,simple_diff_gcn,simple_diff_gin,simple_diff_gine,simple_diff_pna,simple_diff_chemprop\n"
+    deps:
+    - path: bin/dvc/single_task/run.sh
+      hash: md5
+      md5: 5c2f701ba5cddd24537530148744d0a5
+      size: 3718
+      isexec: true
+    - path: diffpred/configs/data/molecule_ace.yaml
+      hash: md5
+      md5: b48f9874e625f231cd7c1579e107f4c2
+      size: 298
+    - path: diffpred/configs/data/tdc.yaml
+      hash: md5
+      md5: 08d1464d48d73e33ba69f4db48605362
+      size: 307
+    - path: diffpred/configs/model
+      hash: md5
+      md5: 1a30b91bb747c498a154b5ff16790f67.dir
+      size: 7714
+      nfiles: 14
+    - path: diffpred/data/moleculeace_data.py
+      hash: md5
+      md5: d5c4c57e80db3b12d5ea94c904bb53d9
+      size: 3755
+    - path: diffpred/data/mpp_datamodule.py
+      hash: md5
+      md5: aaf373954770b7979476443bb823793c
+      size: 16428
+    - path: diffpred/data/tdc_data.py
+      hash: md5
+      md5: 331930e11091516514b9f078807b074a
+      size: 3367
+    - path: diffpred/models
+      hash: md5
+      md5: cfc65134f69bc8704ded9ac47a68acb3.dir
+      size: 52164
+      nfiles: 14
+    - path: diffpred/run.py
+      hash: md5
+      md5: 73fedeb12d96c805c1675d49da0a08c4
+      size: 7475
+    - path: diffpred/trainers
+      hash: md5
+      md5: dc60733b2b9130eb7ad943ff55bd59b7.dir
+      size: 40924
+      nfiles: 3
+    - path: pyproject.toml
+      hash: md5
+      md5: 3852e095023b3bb3bbd6556d25c21b3a
+      size: 1695
+    - path: uv.lock
+      hash: md5
+      md5: 3f061d78b06d2e3696e8dd38bb5fa1d0
+      size: 521963
+    params:
+      params.yaml:
+        single_task.baseline_models: mlp,gcn,gin,gine,pna,chemprop
+        single_task.chembl_datasets: 
+          CHEMBL4203_Ki,CHEMBL2034_Ki,CHEMBL233_Ki,CHEMBL4616_EC50,CHEMBL287_Ki,CHEMBL218_EC50,CHEMBL264_Ki,CHEMBL219_Ki,CHEMBL2835_Ki,CHEMBL2147_Ki,CHEMBL231_Ki,CHEMBL3979_EC50,CHEMBL237_EC50,CHEMBL244_Ki,CHEMBL4792_Ki,CHEMBL1871_Ki,CHEMBL237_Ki,CHEMBL262_Ki,CHEMBL2047_EC50,CHEMBL239_EC50,CHEMBL2971_Ki,CHEMBL204_Ki,CHEMBL214_Ki,CHEMBL1862_Ki,CHEMBL234_Ki,CHEMBL238_Ki,CHEMBL235_EC50,CHEMBL4005_Ki,CHEMBL236_Ki
+        single_task.device: cuda
+        single_task.diff_models: 
+          simple_diff_mlp,simple_diff_gcn,simple_diff_gin,simple_diff_gine,simple_diff_pna,simple_diff_chemprop
+        single_task.epochs: 800
+        single_task.experiment_id: single_task_full
+        single_task.n_jobs: 30
+        single_task.seeds: 1,2,3,4,5
+        single_task.tdc_datasets: 
+          lipophilicity_astrazeneca,solubility_aqsoldb,clearance_hepatocyte_az,clearance_microsome_az,vdss_lombardo,ld50_zhu
+    outs:
+    - path: artifacts/results_raw/single_task/single_task_full
+      hash: md5
+      md5: 0d1347d177969e5fda89e4b3cc7cf036.dir
+      size: 19608501874
+      nfiles: 16114
+  single_task.figures:
+    cmd: "bash bin/dvc/single_task/figures.sh --experiment-id single_task_full --chembl-metrics
+      pearsonr --chembl-plot-type violin --chembl-viz-dir-name chembl_viz --tdc-metrics
+      rmse,pearsonr,r2_score --tdc-plot-type box --tdc-viz-dir-name adme_viz --tdc-datasets
+      lipophilicity_astrazeneca,solubility_aqsoldb,clearance_hepatocyte_az,clearance_microsome_az,vdss_lombardo,ld50_zhu\n"
+    deps:
+    - path: artifacts/results_raw/single_task/single_task_full
+      hash: md5
+      md5: 0d1347d177969e5fda89e4b3cc7cf036.dir
+      size: 19608501874
+      nfiles: 16114
+    - path: bin/dvc/single_task/figures.sh
+      hash: md5
+      md5: 65f30c41b5160e8feb054dee585e63fe
+      size: 2405
+      isexec: true
+    - path: diffpred/constants/literals.py
+      hash: md5
+      md5: ce8554465d1ff4d4cfa154f9a3a51cb6
+      size: 906
+    - path: diffpred/utils/reloader.py
+      hash: md5
+      md5: 3be824e0a2ed6fc46449e478915129bf
+      size: 13795
+    - path: diffpred/viz/single_task_chembl_figures.py
+      hash: md5
+      md5: 4ba7793b41a19918e4945000b0d24193
+      size: 3633
+    - path: diffpred/viz/single_task_exp.py
+      hash: md5
+      md5: 911629295c929040b1d59fd2b5783871
+      size: 22044
+    params:
+      params.yaml:
+        single_task.experiment_id: single_task_full
+        single_task_figures.chembl_metrics: pearsonr
+        single_task_figures.chembl_plot_type: violin
+        single_task_figures.chembl_viz_dir_name: chembl_viz
+        single_task_figures.tdc_datasets: 
+          lipophilicity_astrazeneca,solubility_aqsoldb,clearance_hepatocyte_az,clearance_microsome_az,vdss_lombardo,ld50_zhu
+        single_task_figures.tdc_metrics: rmse,pearsonr,r2_score
+        single_task_figures.tdc_plot_type: box
+        single_task_figures.tdc_viz_dir_name: adme_viz
+    outs:
+    - path: artifacts/figures/single_task/single_task_full/adme_viz
+      hash: md5
+      md5: eff4b0f52deb6e67700fefabdd687300.dir
+      size: 1551138
+      nfiles: 42
+    - path: artifacts/figures/single_task/single_task_full/chembl_viz
+      hash: md5
+      md5: 5bf46ca6fb37fcc233eca46613a9c63e.dir
+      size: 2042078
+      nfiles: 26
+  single_task.generalization_figures:
+    cmd: "uv run python -m diffpred.viz.train_test_gap --path artifacts/results_raw/single_task/single_task_full
+      --metrics pearsonr --benchmark CHEMBL --viz-dir-name artifacts/figures/single_task/single_task_full/ma_gen_gap
+      && uv run python -m diffpred.viz.train_test_gap --path artifacts/results_raw/single_task/single_task_full
+      --metrics pearsonr --benchmark TDC --viz-dir-name artifacts/figures/single_task/single_task_full/tdc_gen_gap\n"
+    deps:
+    - path: artifacts/results_raw/single_task/single_task_full
+      hash: md5
+      md5: 8dc1dd3daa1ba77a80d4425de6055dfe.dir
+      size: 16700368123
+      nfiles: 13429
+    - path: diffpred/constants/literals.py
+      hash: md5
+      md5: ce8554465d1ff4d4cfa154f9a3a51cb6
+      size: 906
+    - path: diffpred/utils/reloader.py
+      hash: md5
+      md5: 3be824e0a2ed6fc46449e478915129bf
+      size: 13795
+    - path: diffpred/viz/train_test_gap.py
+      hash: md5
+      md5: e2c4c48c593195f4ac438a58552f8096
+      size: 14777
+    params:
+      params.yaml:
+        single_task.experiment_id: single_task_full
+        single_task_additional_figures.generalization_chembl_viz_dir: ma_gen_gap
+        single_task_additional_figures.generalization_metrics: pearsonr
+        single_task_additional_figures.generalization_tdc_viz_dir: tdc_gen_gap
+    outs:
+    - path: artifacts/figures/single_task/single_task_full/ma_gen_gap
+      hash: md5
+      md5: 68ec50fb771969616d7dc847e600fed5.dir
+      size: 2667074
+      nfiles: 40
+    - path: artifacts/figures/single_task/single_task_full/tdc_gen_gap
+      hash: md5
+      md5: a4f13bebeb3df2dc261475bb04931e40.dir
+      size: 1000059
+      nfiles: 20
+  single_task.activity_cliff_figures:
+    cmd: "uv run python -m diffpred.viz.activity_cliff_trajectory --run-dir artifacts/results_raw/single_task/single_task_full/molecule_ace_diffpred/data.dataset=CHEMBL262_Ki,data=molecule_ace,experiment.device=cuda,experiment.seed=1,experiment.wandb_mode=disabled,model=simple_diff_mlp
+      --baseline-run-dir artifacts/results_raw/single_task/single_task_full/molecule_ace_baseline/data.dataset=CHEMBL262_Ki,data=molecule_ace,experiment.check_val_freq=1,experiment.device=cuda,experiment.seed=1,experiment.wandb_mode=disabled,model=mlp
+      --num-refinement-steps 50 --outdir artifacts/figures/single_task/single_task_full/ac_trajectory
+      && uv run python -m diffpred.viz.activity_cliff_trajectory --run-dir artifacts/results_raw/single_task/single_task_full/molecule_ace_diffpred/data.dataset=CHEMBL238_Ki,data=molecule_ace,experiment.device=cuda,experiment.seed=1,experiment.wandb_mode=disabled,model=simple_diff_mlp
+      --baseline-run-dir artifacts/results_raw/single_task/single_task_full/molecule_ace_baseline/data.dataset=CHEMBL238_Ki,data=molecule_ace,experiment.check_val_freq=1,experiment.device=cuda,experiment.seed=1,experiment.wandb_mode=disabled,model=mlp
+      --num-refinement-steps 50 --outdir artifacts/figures/single_task/single_task_full/ac_trajectory\n"
+    deps:
+    - path: artifacts/results_raw/single_task/single_task_full
+      hash: md5
+      md5: 8dc1dd3daa1ba77a80d4425de6055dfe.dir
+      size: 16700368123
+      nfiles: 13429
+    - path: diffpred/viz/activity_cliff_trajectory.py
+      hash: md5
+      md5: 911690dd2dfdbd6de0464ed35e25e6af
+      size: 24000
+    params:
+      params.yaml:
+        single_task.experiment_id: single_task_full
+        single_task_additional_figures.activity_cliff_baseline_model: mlp
+        single_task_additional_figures.activity_cliff_dataset_a: CHEMBL262_Ki
+        single_task_additional_figures.activity_cliff_dataset_b: CHEMBL238_Ki
+        single_task_additional_figures.activity_cliff_device: cuda
+        single_task_additional_figures.activity_cliff_diff_model: 
+          simple_diff_mlp
+        single_task_additional_figures.activity_cliff_num_refinement_steps: 50
+        single_task_additional_figures.activity_cliff_seed: 1
+        single_task_additional_figures.activity_cliff_viz_dir: ac_trajectory
+    outs:
+    - path: artifacts/figures/single_task/single_task_full/ac_trajectory
+      hash: md5
+      md5: 5e5b8393905fb9f66337aa7ba90634d9.dir
+      size: 1333484
+      nfiles: 4
+  ablations.guidance.raw_results:
+    cmd: "bash bin/dvc/ablations/guidance/run.sh\n"
+    deps:
+    - path: bin/dvc/ablations/guidance/run.sh
+      hash: md5
+      md5: d32a49fba352b7d4c4d2782869cd47b2
+      size: 1363
+    - path: diffpred/configs
+      hash: md5
+      md5: c802d3d228dd023b24f859372cc6837f.dir
+      size: 9328
+      nfiles: 19
+    - path: diffpred/data/moleculeace_data.py
+      hash: md5
+      md5: d5c4c57e80db3b12d5ea94c904bb53d9
+      size: 3755
+    - path: diffpred/data/mpp_datamodule.py
+      hash: md5
+      md5: aaf373954770b7979476443bb823793c
+      size: 16428
+    - path: diffpred/models
+      hash: md5
+      md5: fe71fab103f261a25753eb0e300f109c.dir
+      size: 44504
+      nfiles: 14
+    - path: diffpred/run.py
+      hash: md5
+      md5: 73fedeb12d96c805c1675d49da0a08c4
+      size: 7475
+    - path: diffpred/trainers
+      hash: md5
+      md5: dc60733b2b9130eb7ad943ff55bd59b7.dir
+      size: 40924
+      nfiles: 3
+    - path: diffpred/utils
+      hash: md5
+      md5: b8e08128c7818f3b5eeb564f3dcf47cc.dir
+      size: 87467
+      nfiles: 9
+    - path: pyproject.toml
+      hash: md5
+      md5: 3852e095023b3bb3bbd6556d25c21b3a
+      size: 1695
+    - path: uv.lock
+      hash: md5
+      md5: 3f061d78b06d2e3696e8dd38bb5fa1d0
+      size: 521963
+    outs:
+    - path: artifacts/results_raw/ablations/guidance
+      hash: md5
+      md5: 15a7d6eab56d5c3e1f8b7dd8acf288e2.dir
+      size: 417110974
+      nfiles: 106
+  ablations.guidance.figures:
+    cmd: "uv run python -m diffpred.viz.viz_guidance_ablation artifacts/results_raw/ablations/guidance
+      --split both --output-dir artifacts/figures/ablations/guidance --save-format
+      pdf\n"
+    deps:
+    - path: artifacts/results_raw/ablations/guidance
+      hash: md5
+      md5: 15a7d6eab56d5c3e1f8b7dd8acf288e2.dir
+      size: 417110974
+      nfiles: 106
+    - path: diffpred/diffusers/edm.py
+      hash: md5
+      md5: 6aa90f3d2a822a7f7db561a6b64a1b6f
+      size: 16938
+    - path: diffpred/utils/reloader.py
+      hash: md5
+      md5: 3be824e0a2ed6fc46449e478915129bf
+      size: 13795
+    - path: diffpred/viz/utils.py
+      hash: md5
+      md5: 718c09b6dd39020670688e07c766eb9e
+      size: 709
+    - path: diffpred/viz/viz_guidance_ablation.py
+      hash: md5
+      md5: 91c0383bf23592d47d35aafdc4f93c19
+      size: 11015
+    outs:
+    - path: artifacts/figures/ablations/guidance
+      hash: md5
+      md5: 936fc64f753f77c3848d93f3377b09cf.dir
+      size: 69700
+      nfiles: 3
+  calibration.raw_results:
+    cmd: "bash bin/dvc/calibration/run.sh\n"
+    deps:
+    - path: bin/dvc/calibration/run.sh
+      hash: md5
+      md5: a748d925691d1e56f0b6d03abd115a5c
+      size: 3065
+    - path: diffpred/configs
+      hash: md5
+      md5: 8be949c2d1a3e1064142c509d800297e.dir
+      size: 10575
+      nfiles: 21
+    - path: diffpred/data
+      hash: md5
+      md5: 6f297a418d825b62f581ed25a1de0227.dir
+      size: 63375
+      nfiles: 12
+    - path: diffpred/models
+      hash: md5
+      md5: cfc65134f69bc8704ded9ac47a68acb3.dir
+      size: 52164
+      nfiles: 14
+    - path: diffpred/run.py
+      hash: md5
+      md5: 73fedeb12d96c805c1675d49da0a08c4
+      size: 7475
+    - path: diffpred/trainers
+      hash: md5
+      md5: dc60733b2b9130eb7ad943ff55bd59b7.dir
+      size: 40924
+      nfiles: 3
+    - path: pyproject.toml
+      hash: md5
+      md5: 3852e095023b3bb3bbd6556d25c21b3a
+      size: 1695
+    - path: uv.lock
+      hash: md5
+      md5: 3f061d78b06d2e3696e8dd38bb5fa1d0
+      size: 521963
+    outs:
+    - path: artifacts/results_raw/calibration
+      hash: md5
+      md5: d08cb9d4ead027f86938fb6815411d23.dir
+      size: 6470045139
+      nfiles: 1516
+  calibration.rejection_curves:
+    cmd: "bash bin/dvc/calibration/rejection_curves.sh\n"
+    deps:
+    - path: artifacts/results_raw/calibration
+      hash: md5
+      md5: d08cb9d4ead027f86938fb6815411d23.dir
+      size: 6470045139
+      nfiles: 1516
+    - path: bin/dvc/calibration/rejection_curves.sh
+      hash: md5
+      md5: 57fae7e8e8acae97933305737bcc64ae
+      size: 910
+    - path: diffpred/eval_ckpt.py
+      hash: md5
+      md5: 369b37e2a942cb4af980ab0eeef88436
+      size: 10675
+    - path: diffpred/uq/rejection_curves.py
+      hash: md5
+      md5: 3c08b8d45dafd57a50bb450741a19b6c
+      size: 32094
+    - path: diffpred/utils/checkpoint_reload.py
+      hash: md5
+      md5: c3609c6eb4d012945000a8cdd9b5ee84
+      size: 19740
+    - path: diffpred/viz/utils.py
+      hash: md5
+      md5: 718c09b6dd39020670688e07c766eb9e
+      size: 709
+    - path: pyproject.toml
+      hash: md5
+      md5: 3852e095023b3bb3bbd6556d25c21b3a
+      size: 1695
+    - path: uv.lock
+      hash: md5
+      md5: 3f061d78b06d2e3696e8dd38bb5fa1d0
+      size: 521963
+    outs:
+    - path: artifacts/figures/calibration/rejection_curves
+      hash: md5
+      md5: aa70f29a5c4b9daf285acf057d13303a.dir
+      size: 2564491
+      nfiles: 50
+  calibration.tables:
+    cmd: "bash bin/dvc/calibration/tables.sh\n"
+    deps:
+    - path: artifacts/results_raw/calibration
+      hash: md5
+      md5: 5158ad66ca7796e007d8774bfb1580ed.dir
+      size: 10743692803
+      nfiles: 1691
+    - path: bin/dvc/calibration/tables.sh
+      hash: md5
+      md5: e3f653a59df9da13d41c6ade436a8471
+      size: 440
+    - path: diffpred/utils/calibration_result_loader.py
+      hash: md5
+      md5: c8914ea11ae6255870b9e247a7cff70d
+      size: 12312
+    - path: pyproject.toml
+      hash: md5
+      md5: 3852e095023b3bb3bbd6556d25c21b3a
+      size: 1695
+    - path: uv.lock
+      hash: md5
+      md5: 3f061d78b06d2e3696e8dd38bb5fa1d0
+      size: 521963
+    outs:
+    - path: artifacts/figures/calibration/tables
+      hash: md5
+      md5: 312c5a8adfebf1aa2bf301a1612d3a38.dir
+      size: 1424
+      nfiles: 4
+  calibration.pred_intervals:
+    cmd: "uv run python -m diffpred.uq.quantiles eval-multi artifacts/results_raw/calibration
+      --output-dir=artifacts/figures/calibration/pred_intervals\n"
+    deps:
+    - path: artifacts/results_raw/calibration
+      hash: md5
+      md5: 5158ad66ca7796e007d8774bfb1580ed.dir
+      size: 10743692803
+      nfiles: 1691
+    - path: diffpred/eval_ckpt.py
+      hash: md5
+      md5: 369b37e2a942cb4af980ab0eeef88436
+      size: 10675
+    - path: diffpred/uq/quantiles.py
+      hash: md5
+      md5: d3e4b669782ca9d12fef8b136cb8e0b5
+      size: 8017
+    - path: diffpred/utils/reloader.py
+      hash: md5
+      md5: bad755be64455e901552ae1b7ece09ca
+      size: 13916
+    - path: pyproject.toml
+      hash: md5
+      md5: 3852e095023b3bb3bbd6556d25c21b3a
+      size: 1695
+    - path: uv.lock
+      hash: md5
+      md5: 3f061d78b06d2e3696e8dd38bb5fa1d0
+      size: 521963
+    outs:
+    - path: artifacts/figures/calibration/pred_intervals
+      hash: md5
+      md5: 39f5bf35237c8c5de94095c6e27c4b67.dir
+      size: 7173
+      nfiles: 3
+  ablations.guidance_modes.raw_results:
+    cmd: "bash bin/dvc/ablations/guidance_modes/run.sh \"guidance_modes_ablation\"\
+      \ \"simple_diff_mlp,simple_diff_gcn\" \"0,1,2,3,4\" \"0.0,1.0\" \"0.2\" \"cosine\"\
+      \ \"800\" \"5\" \"100\" \"5\" \"CHEMBL228_Ki\" \"caco2_wang,solubility_aqsoldb\"\
+      \ \"ABL1\"\n"
+    deps:
+    - path: bin/dvc/ablations/guidance_modes/run.sh
+      hash: md5
+      md5: d2fe41bc64d61ccd62f7e635ea16a0c2
+      size: 1803
+    - path: diffpred/configs
+      hash: md5
+      md5: c802d3d228dd023b24f859372cc6837f.dir
+      size: 9328
+      nfiles: 19
+    - path: diffpred/data
+      hash: md5
+      md5: 6f297a418d825b62f581ed25a1de0227.dir
+      size: 63375
+      nfiles: 12
+    - path: diffpred/models
+      hash: md5
+      md5: fe71fab103f261a25753eb0e300f109c.dir
+      size: 44504
+      nfiles: 14
+    - path: diffpred/run.py
+      hash: md5
+      md5: 73fedeb12d96c805c1675d49da0a08c4
+      size: 7475
+    params:
+      params.yaml:
+        ablations.guidance_modes:
+          experiment_id: guidance_modes_ablation
+          models: simple_diff_mlp,simple_diff_gcn
+          seeds: 0,1,2,3,4
+          guidance: 1.0
+          guidance_dropout: 0.2
+          guidance_schedule: cosine
+          molecule_ace_datasets: CHEMBL228_Ki
+          tdc_datasets: caco2_wang,solubility_aqsoldb
+          dockstring_datasets: ABL1
+          default_n_jobs: 5
+          dockstring_n_jobs: 5
+          default_max_epochs: 800
+          dockstring_max_epochs: 100
+    outs:
+    - path: artifacts/results_raw/ablations/guidance_modes_ablation
+      hash: md5
+      md5: aa1a0a51567a65dbdaf876a148c40993.dir
+      size: 1478274828
+      nfiles: 681
+  ablations.guidance_modes.figures:
+    cmd: "bash bin/dvc/ablations/guidance_modes/figures.sh \"guidance_modes_ablation\"\
+      \n"
+    deps:
+    - path: artifacts/results_raw/ablations/guidance_modes_ablation
+      hash: md5
+      md5: aa1a0a51567a65dbdaf876a148c40993.dir
+      size: 1478274828
+      nfiles: 681
+    - path: bin/dvc/ablations/guidance_modes/figures.sh
+      hash: md5
+      md5: 8421101b03ef4781e94dad5c83226dd6
+      size: 594
+    - path: diffpred/viz/guidance_ablation_viz.py
+      hash: md5
+      md5: 27021e30d348812f60b21a5eb6b2a297
+      size: 5144
+    params:
+      params.yaml:
+        ablations.guidance_modes.experiment_id: guidance_modes_ablation
+    outs:
+    - path: artifacts/figures/ablations/guidance_modes_ablation
+      hash: md5
+      md5: 79ce3a72fcbac04dcbf08e44dc78869c.dir
+      size: 118744
+      nfiles: 5
+  multitask_imputation.data_prep:
+    cmd: "bash bin/dvc/multitask_imputation/prepare.sh --datasets dockstring --ratios
+      0.0,0.2,0.4,0.6,0.8 --seeds 1,2,3 --output-root artifacts/data/multitask_imputation\n"
+    deps:
+    - path: bin/dvc/multitask_imputation/prepare.sh
+      hash: md5
+      md5: a47a2f02e6e14b0290490963965979ff
+      size: 1591
+      isexec: true
+    - path: diffpred/constants/multitask_imputation.py
+      hash: md5
+      md5: 096e8c5e7b78c012527c2d464391ae72
+      size: 739
+    - path: diffpred/data/masked_imputation_artifacts.py
+      hash: md5
+      md5: 5dc5f96179c7df63040a7f4077efe45e
+      size: 5666
+    - path: diffpred/data/multitask_imputation_prep.py
+      hash: md5
+      md5: fd5f48774c46571e5270bf5b274856ae
+      size: 6266
+    - path: pyproject.toml
+      hash: md5
+      md5: 3852e095023b3bb3bbd6556d25c21b3a
+      size: 1695
+    - path: uv.lock
+      hash: md5
+      md5: 3f061d78b06d2e3696e8dd38bb5fa1d0
+      size: 521963
+    params:
+      params.yaml:
+        multitask_imputation.data_root: artifacts/data/multitask_imputation
+        multitask_imputation.datasets: dockstring
+        multitask_imputation.ratios: 0.0,0.2,0.4,0.6,0.8
+        multitask_imputation.seeds: 1,2,3
+    outs:
+    - path: artifacts/data/multitask_imputation
+      hash: md5
+      md5: 82ed5f3c614cb3ecc0cbcf65c116aa9e.dir
+      size: 340620118
+      nfiles: 75
+  multitask_imputation.raw_results:
+    cmd: "bash bin/dvc/multitask_imputation/run.sh --dataset dockstring --ratios 0.0,0.2,0.4,0.6,0.8
+      --seeds 1,2,3 --models mlp,simple_diff_mlp --n-jobs 15 --epochs 70 --wandb-mode
+      disabled --results-root artifacts/results_raw/multitask_imputation --data-root
+      artifacts/data/multitask_imputation\n"
+    deps:
+    - path: artifacts/data/multitask_imputation
+      hash: md5
+      md5: 82ed5f3c614cb3ecc0cbcf65c116aa9e.dir
+      size: 340620118
+      nfiles: 75
+    - path: bin/dvc/multitask_imputation/run.sh
+      hash: md5
+      md5: ac41838991e55905fd2a4d79b782753e
+      size: 3646
+      isexec: true
+    - path: diffpred/configs
+      hash: md5
+      md5: c802d3d228dd023b24f859372cc6837f.dir
+      size: 9328
+      nfiles: 19
+    - path: diffpred/data/masked_dataframe_datamodule.py
+      hash: md5
+      md5: 3a485fdca5d476c5a997c9178a049bce
+      size: 10495
+    - path: diffpred/data/masked_imputation_artifacts.py
+      hash: md5
+      md5: 5dc5f96179c7df63040a7f4077efe45e
+      size: 5666
+    - path: diffpred/data/mpp_datamodule.py
+      hash: md5
+      md5: aaf373954770b7979476443bb823793c
+      size: 16428
+    - path: diffpred/models
+      hash: md5
+      md5: fe71fab103f261a25753eb0e300f109c.dir
+      size: 44504
+      nfiles: 14
+    - path: diffpred/run.py
+      hash: md5
+      md5: 73fedeb12d96c805c1675d49da0a08c4
+      size: 7475
+    - path: diffpred/trainers
+      hash: md5
+      md5: dc60733b2b9130eb7ad943ff55bd59b7.dir
+      size: 40924
+      nfiles: 3
+    - path: diffpred/utils/reloader.py
+      hash: md5
+      md5: 3be824e0a2ed6fc46449e478915129bf
+      size: 13795
+    - path: pyproject.toml
+      hash: md5
+      md5: 3852e095023b3bb3bbd6556d25c21b3a
+      size: 1695
+    - path: uv.lock
+      hash: md5
+      md5: 3f061d78b06d2e3696e8dd38bb5fa1d0
+      size: 521963
+    params:
+      params.yaml:
+        multitask_imputation.data_root: artifacts/data/multitask_imputation
+        multitask_imputation.datasets: dockstring
+        multitask_imputation.epochs: 70
+        multitask_imputation.models: mlp,simple_diff_mlp
+        multitask_imputation.n_jobs: 15
+        multitask_imputation.ratios: 0.0,0.2,0.4,0.6,0.8
+        multitask_imputation.results_root: 
+          artifacts/results_raw/multitask_imputation
+        multitask_imputation.seeds: 1,2,3
+        multitask_imputation.wandb_mode: disabled
+    outs:
+    - path: artifacts/results_raw/multitask_imputation
+      hash: md5
+      md5: dbef4f5680146fe309e84d6219f34f61.dir
+      size: 641517975
+      nfiles: 256
+  multitask_imputation.evaluation:
+    cmd: "bash bin/dvc/multitask_imputation/eval.sh --results-root artifacts/results_raw/multitask_imputation
+      --output-dir artifacts/figures/multitask_imputation --n-jobs 15 $([ \"true\"\
+      \ = \"true\" ] && echo --disable-guidance || echo --no-disable-guidance)\n"
+    deps:
+    - path: artifacts/results_raw/multitask_imputation
+      hash: md5
+      md5: dbef4f5680146fe309e84d6219f34f61.dir
+      size: 641517975
+      nfiles: 256
+    - path: bin/dvc/multitask_imputation/eval.sh
+      hash: md5
+      md5: 1911bbbac75577cf63d07bd46ba8e023
+      size: 1762
+      isexec: true
+    - path: diffpred/eval_ckpt.py
+      hash: md5
+      md5: 369b37e2a942cb4af980ab0eeef88436
+      size: 10675
+    - path: diffpred/utils/multitask_imputation_eval.py
+      hash: md5
+      md5: cfcaf5e777e308b1f34e91eca7374469
+      size: 9623
+    - path: diffpred/utils/reloader.py
+      hash: md5
+      md5: 3be824e0a2ed6fc46449e478915129bf
+      size: 13795
+    - path: diffpred/viz/multitask_imputation.py
+      hash: md5
+      md5: bb6e4dd25e844a012b8fe7f4f9a9acae
+      size: 1717
+    - path: pyproject.toml
+      hash: md5
+      md5: 3852e095023b3bb3bbd6556d25c21b3a
+      size: 1695
+    - path: uv.lock
+      hash: md5
+      md5: 3f061d78b06d2e3696e8dd38bb5fa1d0
+      size: 521963
+    params:
+      params.yaml:
+        multitask_imputation.disable_eval_guidance: true
+        multitask_imputation.metrics: rmse,mae
+        multitask_imputation.output_dir: artifacts/figures/multitask_imputation
+        multitask_imputation.ranking_metric: rmse
+        multitask_imputation.results_root: 
+          artifacts/results_raw/multitask_imputation
+        multitask_imputation.use_ema: true
+    outs:
+    - path: artifacts/figures/multitask_imputation
+      hash: md5
+      md5: 5fbcee206fff2ed60ba9cf42b7b49875.dir
+      size: 106173
+      nfiles: 4
+  multitask.raw_results:
+    cmd: "bash bin/dvc/multitask/run.sh\n"
+    deps:
+    - path: artifacts/data/multitask/polaris_benchmark_splits_prepared.txt
+      hash: md5
+      md5: f3e89ce02d591fe4b67a1952c95c8dc3
+      size: 96
+    - path: bin/dvc/multitask/run.sh
+      hash: md5
+      md5: 357da038227666c992974abf10cbd548
+      size: 1931
+    - path: diffpred/data/mpp_datamodule.py
+      hash: md5
+      md5: 3fa4c5613524e31188f0717eb1c89ab7
+      size: 18103
+    - path: diffpred/data/polaris.py
+      hash: md5
+      md5: 5da1c07aad6e66195c62adf29470cf36
+      size: 13211
+    - path: diffpred/exp_configs
+      hash: md5
+      md5: f0e8a8b9b2ba914330852087da43bd7f.dir
+      size: 65556
+      nfiles: 48
+    - path: diffpred/models
+      hash: md5
+      md5: 98a30785c3b9fb5321ada927dfefee0d.dir
+      size: 87622
+      nfiles: 17
+    - path: diffpred/run.py
+      hash: md5
+      md5: 4e38bfe970c5126f10ee93f67b75d8ed
+      size: 7545
+    - path: diffpred/trainers
+      hash: md5
+      md5: dc60733b2b9130eb7ad943ff55bd59b7.dir
+      size: 40924
+      nfiles: 3
+    - path: pyproject.toml
+      hash: md5
+      md5: 3852e095023b3bb3bbd6556d25c21b3a
+      size: 1695
+    - path: uv.lock
+      hash: md5
+      md5: 3f061d78b06d2e3696e8dd38bb5fa1d0
+      size: 521963
+    outs:
+    - path: artifacts/results_raw/multitask
+      hash: md5
+      md5: 460da9e55977f15f029dd8d934760bf5.dir
+      size: 303445705
+      nfiles: 291
+  multitask.prepare_data:
+    cmd: "bash bin/dvc/multitask/prepare.sh --datasets biogen/adme-fang-reg-v1,graphium/tox21-v1,graphium/zinc12k-v1
+      --seeds 1,2,3,4,5 --stamp-path artifacts/data/multitask/polaris_benchmark_splits_prepared.txt\n"
+    deps:
+    - path: bin/dvc/multitask/prepare.py
+      hash: md5
+      md5: 49c053518de16d0dd7a567ff5ec58a20
+      size: 1503
+    - path: bin/dvc/multitask/prepare.sh
+      hash: md5
+      md5: 3135db2b781ee360fbc5bdb63722961d
+      size: 841
+    - path: diffpred/data/mpp_datamodule.py
+      hash: md5
+      md5: 3fa4c5613524e31188f0717eb1c89ab7
+      size: 18103
+    - path: diffpred/data/polaris.py
+      hash: md5
+      md5: 5da1c07aad6e66195c62adf29470cf36
+      size: 13211
+    - path: pyproject.toml
+      hash: md5
+      md5: 3852e095023b3bb3bbd6556d25c21b3a
+      size: 1695
+    - path: uv.lock
+      hash: md5
+      md5: 3f061d78b06d2e3696e8dd38bb5fa1d0
+      size: 521963
+    params:
+      params.yaml:
+        multitask.datasets: 
+          biogen/adme-fang-reg-v1,graphium/tox21-v1,graphium/zinc12k-v1
+        multitask.seeds: 1,2,3,4,5
+    outs:
+    - path: artifacts/data/multitask/polaris_benchmark_splits_prepared.txt
+      hash: md5
+      md5: f3e89ce02d591fe4b67a1952c95c8dc3
+      size: 96
+  multitask.tables:
+    cmd: "bash bin/dvc/multitask/tables.sh \"rmse,mae\" \"rmse\" \"pr_auc,roc_auc,mcc\"\
+      \ \"pr_auc\"\n"
+    deps:
+    - path: artifacts/results_raw/multitask
+      hash: md5
+      md5: 2240c9354875f3b7925c7bb788c20d17.dir
+      size: 5055246434
+      nfiles: 2328
+    - path: bin/dvc/multitask/tables.sh
+      hash: md5
+      md5: 7676f44734e646396bc8b7d30e79b370
+      size: 1404
+      isexec: true
+    - path: diffpred/utils/result_loader.py
+      hash: md5
+      md5: d23418da3fdc5813445ae2ef83008864
+      size: 24839
+    params:
+      params.yaml:
+        multitask.clf_metrics: pr_auc,roc_auc,mcc
+        multitask.clf_ranking_metric: pr_auc
+        multitask.reg_metrics: rmse,mae
+        multitask.reg_ranking_metric: rmse
+    outs:
+    - path: artifacts/figures/multitask/adme-fang
+      hash: md5
+      md5: e9ff400409ba25ce0f8c7db65130f5e9.dir
+      size: 1036
+      nfiles: 2
+    - path: artifacts/figures/multitask/tox21
+      hash: md5
+      md5: e560fc3f95605f72b7d9ee0cb0c79319.dir
+      size: 1443
+      nfiles: 2
+    - path: artifacts/figures/multitask/zinc
+      hash: md5
+      md5: 1a1f8b7c8f561cd8080ddbcaf1651192.dir
+      size: 1022
+      nfiles: 2

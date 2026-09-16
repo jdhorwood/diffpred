@@ -1,0 +1,18 @@
+exp_name: ${data.name}_${data.dataset}_${model.name}
+output_dir: outputs_${experiment.exp_name}
+seed: 0
+device: null
+debug: False
+wandb_mode: disabled # set to 'online' to log to Weights & Biases
+wandb_project: diffpred
+console_out: True
+use_last_ckpt: False # use "best" if False
+save_last_ckpt: False
+monitor_metric: val/rmse
+monitor_mode: min
+use_ema_on_test: True
+ema_decay: 0.99
+check_val_freq: 10
+tune: False
+tuning_n_trials: 50
+callbacks: []

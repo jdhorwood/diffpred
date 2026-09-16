@@ -1,0 +1,23 @@
+hydra:
+  sweep:
+    dir: multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    subdir: ${hydra.job.override_dirname}
+  job:
+    config:
+      override_dirname:
+            exclude_keys:
+              - experiment.data_params.featurizer
+              - model.training.max_epochs
+              - model.training.batch_size
+              - experiment.monitor_metric
+              - experiment.monitor_mode
+              - data.classification
+              - experiment.callbacks
+              - experiment.save_last_ckpt
+  launcher:
+    n_jobs: 6
+defaults:
+  - experiment: default
+  - model: mlp
+  - data: tdc
+  - override hydra/launcher: joblib

@@ -1,0 +1,418 @@
+vars:
+  - params.yaml
+
+stages:
+  single_task.raw_results:
+    cmd: >
+      bash bin/dvc/single_task/run.sh
+      --experiment-id ${single_task.experiment_id}
+      --device ${single_task.device}
+      --n-jobs ${single_task.n_jobs}
+      --epochs ${single_task.epochs}
+      --seeds ${single_task.seeds}
+      --tdc-datasets ${single_task.tdc_datasets}
+      --chembl-datasets ${single_task.chembl_datasets}
+      --baseline-models ${single_task.baseline_models}
+      --diff-models ${single_task.diff_models}
+    deps:
+      - bin/dvc/single_task/run.sh
+      - diffpred/run.py
+      - diffpred/configs/model
+      - diffpred/configs/data/tdc.yaml
+      - diffpred/configs/data/molecule_ace.yaml
+      - diffpred/data/tdc_data.py
+      - diffpred/data/mpp_datamodule.py
+      - diffpred/data/moleculeace_data.py
+      - diffpred/models
+      - diffpred/trainers
+      - pyproject.toml
+      - uv.lock
+    params:
+      - single_task.experiment_id
+      - single_task.device
+      - single_task.n_jobs
+      - single_task.epochs
+      - single_task.seeds
+      - single_task.tdc_datasets
+      - single_task.chembl_datasets
+      - single_task.baseline_models
+      - single_task.diff_models
+    outs:
+      - artifacts/results_raw/single_task/${single_task.experiment_id}:
+          cache: false
+
+  single_task.figures:
+    cmd: >
+      bash bin/dvc/single_task/figures.sh
+      --experiment-id ${single_task.experiment_id}
+      --chembl-metrics ${single_task_figures.chembl_metrics}
+      --chembl-plot-type ${single_task_figures.chembl_plot_type}
+      --chembl-viz-dir-name ${single_task_figures.chembl_viz_dir_name}
+      --tdc-metrics ${single_task_figures.tdc_metrics}
+      --tdc-plot-type ${single_task_figures.tdc_plot_type}
+      --tdc-viz-dir-name ${single_task_figures.tdc_viz_dir_name}
+      --tdc-datasets ${single_task_figures.tdc_datasets}
+    deps:
+      - bin/dvc/single_task/figures.sh
+      - diffpred/viz/single_task_chembl_figures.py
+      - diffpred/viz/single_task_exp.py
+      - diffpred/constants/literals.py
+      - diffpred/utils/reloader.py
+      - artifacts/results_raw/single_task/${single_task.experiment_id}
+    params:
+      - single_task.experiment_id
+      - single_task_figures.chembl_metrics
+      - single_task_figures.chembl_plot_type
+      - single_task_figures.chembl_viz_dir_name
+      - single_task_figures.tdc_metrics
+      - single_task_figures.tdc_plot_type
+      - single_task_figures.tdc_viz_dir_name
+      - single_task_figures.tdc_datasets
+    outs:
+      - artifacts/figures/single_task/${single_task.experiment_id}/${single_task_figures.chembl_viz_dir_name}:
+          cache: false
+      - artifacts/figures/single_task/${single_task.experiment_id}/${single_task_figures.tdc_viz_dir_name}:
+          cache: false
+
+  single_task.generalization_figures:
+    cmd: >
+      uv run python -m diffpred.viz.train_test_gap
+      --path artifacts/results_raw/single_task/${single_task.experiment_id}
+      --metrics ${single_task_additional_figures.generalization_metrics}
+      --benchmark CHEMBL
+      --viz-dir-name artifacts/figures/single_task/${single_task.experiment_id}/${single_task_additional_figures.generalization_chembl_viz_dir}
+      &&
+      uv run python -m diffpred.viz.train_test_gap
+      --path artifacts/results_raw/single_task/${single_task.experiment_id}
+      --metrics ${single_task_additional_figures.generalization_metrics}
+      --benchmark TDC
+      --viz-dir-name artifacts/figures/single_task/${single_task.experiment_id}/${single_task_additional_figures.generalization_tdc_viz_dir}
+    deps:
+      - diffpred/viz/train_test_gap.py
+      - diffpred/utils/reloader.py
+      - diffpred/constants/literals.py
+      - artifacts/results_raw/single_task/${single_task.experiment_id}
+    params:
+      - single_task.experiment_id
+      - single_task_additional_figures.generalization_metrics
+      - single_task_additional_figures.generalization_chembl_viz_dir
+      - single_task_additional_figures.generalization_tdc_viz_dir
+    outs:
+      - artifacts/figures/single_task/${single_task.experiment_id}/${single_task_additional_figures.generalization_chembl_viz_dir}:
+          cache: false
+      - artifacts/figures/single_task/${single_task.experiment_id}/${single_task_additional_figures.generalization_tdc_viz_dir}:
+          cache: false
+
+  single_task.activity_cliff_figures:
+    cmd: >
+      uv run python -m diffpred.viz.activity_cliff_trajectory
+      --run-dir artifacts/results_raw/single_task/${single_task.experiment_id}/molecule_ace_diffpred/data.dataset=${single_task_additional_figures.activity_cliff_dataset_a},data=molecule_ace,experiment.device=${single_task_additional_figures.activity_cliff_device},experiment.seed=${single_task_additional_figures.activity_cliff_seed},experiment.wandb_mode=disabled,model=${single_task_additional_figures.activity_cliff_diff_model}
+      --baseline-run-dir artifacts/results_raw/single_task/${single_task.experiment_id}/molecule_ace_baseline/data.dataset=${single_task_additional_figures.activity_cliff_dataset_a},data=molecule_ace,experiment.check_val_freq=1,experiment.device=${single_task_additional_figures.activity_cliff_device},experiment.seed=${single_task_additional_figures.activity_cliff_seed},experiment.wandb_mode=disabled,model=${single_task_additional_figures.activity_cliff_baseline_model}
+      --num-refinement-steps ${single_task_additional_figures.activity_cliff_num_refinement_steps}
+      --outdir artifacts/figures/single_task/${single_task.experiment_id}/${single_task_additional_figures.activity_cliff_viz_dir}
+      &&
+      uv run python -m diffpred.viz.activity_cliff_trajectory
+      --run-dir artifacts/results_raw/single_task/${single_task.experiment_id}/molecule_ace_diffpred/data.dataset=${single_task_additional_figures.activity_cliff_dataset_b},data=molecule_ace,experiment.device=${single_task_additional_figures.activity_cliff_device},experiment.seed=${single_task_additional_figures.activity_cliff_seed},experiment.wandb_mode=disabled,model=${single_task_additional_figures.activity_cliff_diff_model}
+      --baseline-run-dir artifacts/results_raw/single_task/${single_task.experiment_id}/molecule_ace_baseline/data.dataset=${single_task_additional_figures.activity_cliff_dataset_b},data=molecule_ace,experiment.check_val_freq=1,experiment.device=${single_task_additional_figures.activity_cliff_device},experiment.seed=${single_task_additional_figures.activity_cliff_seed},experiment.wandb_mode=disabled,model=${single_task_additional_figures.activity_cliff_baseline_model}
+      --num-refinement-steps ${single_task_additional_figures.activity_cliff_num_refinement_steps}
+      --outdir artifacts/figures/single_task/${single_task.experiment_id}/${single_task_additional_figures.activity_cliff_viz_dir}
+    deps:
+      - diffpred/viz/activity_cliff_trajectory.py
+      - artifacts/results_raw/single_task/${single_task.experiment_id}
+    params:
+      - single_task.experiment_id
+      - single_task_additional_figures.activity_cliff_dataset_a
+      - single_task_additional_figures.activity_cliff_dataset_b
+      - single_task_additional_figures.activity_cliff_baseline_model
+      - single_task_additional_figures.activity_cliff_diff_model
+      - single_task_additional_figures.activity_cliff_seed
+      - single_task_additional_figures.activity_cliff_device
+      - single_task_additional_figures.activity_cliff_num_refinement_steps
+      - single_task_additional_figures.activity_cliff_viz_dir
+    outs:
+      - artifacts/figures/single_task/${single_task.experiment_id}/${single_task_additional_figures.activity_cliff_viz_dir}:
+          cache: false
+
+  ablations.guidance.raw_results:
+    cmd: >
+      bash bin/dvc/ablations/guidance/run.sh
+    deps:
+      - bin/dvc/ablations/guidance/run.sh
+      - diffpred/run.py
+      - diffpred/configs
+      - diffpred/data/mpp_datamodule.py
+      - diffpred/data/moleculeace_data.py
+      - diffpred/models
+      - diffpred/trainers
+      - diffpred/utils
+      - pyproject.toml
+      - uv.lock
+    outs:
+      - artifacts/results_raw/ablations/guidance:
+          cache: false
+
+  ablations.guidance.figures:
+    cmd: >
+      uv run python -m diffpred.viz.viz_guidance_ablation
+      artifacts/results_raw/ablations/guidance
+      --split both
+      --output-dir artifacts/figures/ablations/guidance
+      --save-format pdf
+    deps:
+      - diffpred/viz/viz_guidance_ablation.py
+      - diffpred/viz/utils.py
+      - diffpred/diffusers/edm.py
+      - diffpred/utils/reloader.py
+      - artifacts/results_raw/ablations/guidance
+    outs:
+      - artifacts/figures/ablations/guidance:
+          cache: false
+
+  calibration.raw_results:
+    cmd: >
+      bash bin/dvc/calibration/run.sh
+    deps:
+      - bin/dvc/calibration/run.sh
+      - diffpred/run.py
+      - diffpred/configs
+      - diffpred/data
+      - diffpred/models
+      - diffpred/trainers
+      - pyproject.toml
+      - uv.lock
+    outs:
+      - artifacts/results_raw/calibration:
+          cache: false
+
+  calibration.tables:
+    cmd: >
+      bash bin/dvc/calibration/tables.sh
+    deps:
+      - bin/dvc/calibration/tables.sh
+      - diffpred/utils/calibration_result_loader.py
+      - artifacts/results_raw/calibration
+      - pyproject.toml
+      - uv.lock
+    outs:
+      - artifacts/figures/calibration/tables:
+          cache: false
+
+  calibration.rejection_curves:
+    cmd: >
+      bash bin/dvc/calibration/rejection_curves.sh
+    deps:
+      - bin/dvc/calibration/rejection_curves.sh
+      - diffpred/uq/rejection_curves.py
+      - diffpred/eval_ckpt.py
+      - diffpred/utils/checkpoint_reload.py
+      - diffpred/viz/utils.py
+      - artifacts/results_raw/calibration
+      - pyproject.toml
+      - uv.lock
+    outs:
+      - artifacts/figures/calibration/rejection_curves:
+          cache: false
+
+  calibration.pred_intervals:
+    cmd: >
+      uv run python -m diffpred.uq.quantiles eval-multi artifacts/results_raw/calibration --output-dir=artifacts/figures/calibration/pred_intervals
+    deps:
+      - diffpred/uq/quantiles.py
+      - diffpred/eval_ckpt.py
+      - diffpred/utils/reloader.py
+      - artifacts/results_raw/calibration
+      - pyproject.toml
+      - uv.lock
+    outs:
+      - artifacts/figures/calibration/pred_intervals:
+          cache: false
+  
+  ablations.guidance_modes.raw_results:
+    cmd: >
+      bash bin/dvc/ablations/guidance_modes/run.sh
+      "${ablations.guidance_modes.experiment_id}"
+      "${ablations.guidance_modes.models}"
+      "${ablations.guidance_modes.seeds}"
+      "0.0,${ablations.guidance_modes.guidance}"
+      "${ablations.guidance_modes.guidance_dropout}"
+      "${ablations.guidance_modes.guidance_schedule}"
+      "${ablations.guidance_modes.default_max_epochs}"
+      "${ablations.guidance_modes.default_n_jobs}"
+      "${ablations.guidance_modes.dockstring_max_epochs}"
+      "${ablations.guidance_modes.dockstring_n_jobs}"
+      "${ablations.guidance_modes.molecule_ace_datasets}"
+      "${ablations.guidance_modes.tdc_datasets}"
+      "${ablations.guidance_modes.dockstring_datasets}"
+    deps:
+      - bin/dvc/ablations/guidance_modes/run.sh
+      - diffpred/run.py
+      - diffpred/configs
+      - diffpred/data
+      - diffpred/models
+    params:
+      - ablations.guidance_modes
+    outs:
+      - artifacts/results_raw/ablations/${ablations.guidance_modes.experiment_id}:
+          cache: false
+
+  ablations.guidance_modes.figures:
+    cmd: >
+      bash bin/dvc/ablations/guidance_modes/figures.sh
+      "${ablations.guidance_modes.experiment_id}"
+    deps:
+      - bin/dvc/ablations/guidance_modes/figures.sh
+      - diffpred/viz/guidance_ablation_viz.py
+      - artifacts/results_raw/ablations/${ablations.guidance_modes.experiment_id}
+    params:
+      - ablations.guidance_modes.experiment_id
+    outs:
+      - artifacts/figures/ablations/${ablations.guidance_modes.experiment_id}:
+          cache: false
+
+  multitask_imputation.data_prep:
+    cmd: >
+      bash bin/dvc/multitask_imputation/prepare.sh
+      --datasets ${multitask_imputation.datasets}
+      --ratios ${multitask_imputation.ratios}
+      --seeds ${multitask_imputation.seeds}
+      --output-root ${multitask_imputation.data_root}
+    deps:
+      - bin/dvc/multitask_imputation/prepare.sh
+      - diffpred/data/multitask_imputation_prep.py
+      - diffpred/data/masked_imputation_artifacts.py
+      - diffpred/constants/multitask_imputation.py
+      - pyproject.toml
+      - uv.lock
+    params:
+      - multitask_imputation.datasets
+      - multitask_imputation.ratios
+      - multitask_imputation.seeds
+      - multitask_imputation.data_root
+    outs:
+      - ${multitask_imputation.data_root}:
+          cache: false
+
+  multitask_imputation.raw_results:
+    cmd: >
+      bash bin/dvc/multitask_imputation/run.sh
+      --dataset ${multitask_imputation.datasets}
+      --ratios ${multitask_imputation.ratios}
+      --seeds ${multitask_imputation.seeds}
+      --models ${multitask_imputation.models}
+      --n-jobs ${multitask_imputation.n_jobs}
+      --epochs ${multitask_imputation.epochs}
+      --wandb-mode ${multitask_imputation.wandb_mode}
+      --results-root ${multitask_imputation.results_root}
+      --data-root ${multitask_imputation.data_root}
+    deps:
+      - bin/dvc/multitask_imputation/run.sh
+      - diffpred/run.py
+      - diffpred/configs
+      - diffpred/data/masked_dataframe_datamodule.py
+      - diffpred/data/masked_imputation_artifacts.py
+      - diffpred/data/mpp_datamodule.py
+      - diffpred/models
+      - diffpred/trainers
+      - diffpred/utils/reloader.py
+      - pyproject.toml
+      - uv.lock
+      - ${multitask_imputation.data_root}
+    params:
+      - multitask_imputation.datasets
+      - multitask_imputation.ratios
+      - multitask_imputation.seeds
+      - multitask_imputation.models
+      - multitask_imputation.n_jobs
+      - multitask_imputation.epochs
+      - multitask_imputation.wandb_mode
+      - multitask_imputation.results_root
+      - multitask_imputation.data_root
+    outs:
+      - ${multitask_imputation.results_root}:
+          cache: false
+
+  multitask_imputation.evaluation:
+    cmd: >
+        bash bin/dvc/multitask_imputation/eval.sh
+        --results-root ${multitask_imputation.results_root}
+        --output-dir ${multitask_imputation.output_dir}
+        --n-jobs ${multitask_imputation.n_jobs}
+        $([ "${multitask_imputation.disable_eval_guidance}" = "true" ] && echo --disable-guidance || echo --no-disable-guidance)
+    deps:
+      - bin/dvc/multitask_imputation/eval.sh
+      - diffpred/utils/multitask_imputation_eval.py
+      - diffpred/viz/multitask_imputation.py
+      - diffpred/eval_ckpt.py
+      - diffpred/utils/reloader.py
+      - pyproject.toml
+      - uv.lock
+      - ${multitask_imputation.results_root}
+    params:
+      - multitask_imputation.results_root
+      - multitask_imputation.output_dir
+      - multitask_imputation.use_ema
+      - multitask_imputation.disable_eval_guidance
+    outs:
+      - ${multitask_imputation.output_dir}:
+          cache: false
+  multitask.raw_results:
+    cmd: >
+      bash bin/dvc/multitask/run.sh
+    deps:
+      - artifacts/data/multitask/polaris_benchmark_splits_prepared.txt
+      - bin/dvc/multitask/run.sh
+      - diffpred/run.py
+      - diffpred/exp_configs
+      - diffpred/data/polaris.py
+      - diffpred/data/mpp_datamodule.py
+      - diffpred/models
+      - diffpred/trainers
+      - pyproject.toml
+      - uv.lock
+    outs:
+      - artifacts/results_raw/multitask:
+          cache: false
+
+  multitask.prepare_data:
+    cmd: >
+      bash bin/dvc/multitask/prepare.sh
+      --datasets ${multitask.datasets}
+      --seeds ${multitask.seeds}
+      --stamp-path artifacts/data/multitask/polaris_benchmark_splits_prepared.txt
+    deps:
+      - bin/dvc/multitask/prepare.py
+      - bin/dvc/multitask/prepare.sh
+      - diffpred/data/polaris.py
+      - diffpred/data/mpp_datamodule.py
+      - pyproject.toml
+      - uv.lock
+    params:
+      - multitask.datasets
+      - multitask.seeds
+    outs:
+      - artifacts/data/multitask/polaris_benchmark_splits_prepared.txt:
+          cache: false
+
+  multitask.tables:
+    cmd: >
+      bash bin/dvc/multitask/tables.sh
+      "${multitask.reg_metrics}"
+      "${multitask.reg_ranking_metric}"
+      "${multitask.clf_metrics}"
+      "${multitask.clf_ranking_metric}"
+    deps:
+      - bin/dvc/multitask/tables.sh
+      - artifacts/results_raw/multitask
+      - diffpred/utils/result_loader.py
+    params:
+      - multitask.reg_metrics
+      - multitask.reg_ranking_metric
+      - multitask.clf_metrics
+      - multitask.clf_ranking_metric
+    outs:
+      - artifacts/figures/multitask/adme-fang:
+          cache: false
+      - artifacts/figures/multitask/tox21:
+          cache: false
+      - artifacts/figures/multitask/zinc:
+          cache: false

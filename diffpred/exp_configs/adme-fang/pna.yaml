@@ -1,0 +1,63 @@
+data:
+  classification: false
+  dataset: biogen/adme-fang-reg-v1
+  diffusion_params:
+    diffusion_type: null
+    guidance: 1.0
+    guidance_dropout: 0.2
+    guidance_schedule: cosine
+    refinement_steps: 10
+    sigma_max: 10
+    sigma_min: 0.0001
+  log_transform: false
+  name: polaris
+  standardize_targets: true
+  symmetric_binary_targets: true
+  use_benchmark: true
+experiment:
+  callbacks: []
+  check_val_freq: 10
+  console_out: true
+  debug: false
+  device: null
+  ema_decay: 0.99
+  exp_name: ${data.name}_${data.dataset}_${model.name}
+  monitor_metric: val/rmse
+  monitor_mode: min
+  output_dir: outputs_${experiment.exp_name}
+  seed: 0
+  tune: false
+  tuning_n_trials: 50
+  save_last_ckpt: False
+  use_ema_on_test: true
+  use_last_ckpt: false
+  wandb_mode: null
+model:
+  featurizer: graph
+  hparams:
+    activation: silu
+    batch_norm: true
+    cond_config:
+      fusion_gating: false
+      fusion_loc: post-branch
+      fusion_type: none
+      use_timestep_gating: false
+    dropout: 0.0
+    feature_hiddens:
+    - 512
+    - 256
+    - 128
+    hidden_dim: 128
+    net_type: pna
+    num_hiddens: 3
+    output_mlp_type: residual
+    pooling: sum
+  name: gnn
+  training:
+    batch_size: 1024
+    batched_sampling: true
+    loss_weights: true
+    lr: 0.001
+    max_epochs: 500
+    num_pred_samples: 100
+    shuffle_train: true

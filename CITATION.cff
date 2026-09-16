@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "DiffPred"
+abstract: >-
+  DiffPred is a research codebase for diffusion-based molecular property
+  prediction, accompanying the manuscript title "Improving Molecular Property Prediction with Score-based Diffusion Models".Experiments are configured with Hydra and
+  orchestrated as DVC pipelines for reproducibility.
+authors:
+  - family-names: Horwood
+    given-names: Julien
+version: 0.1.0
+date-released: 2026-09-15
+license: MIT
+repository-code: "https://github.com/jdhorwood/diffpred"
+keywords:
+  - diffusion models
+  - molecular property prediction
+  - drug discovery
+  - machine learning
+  - uncertainty quantification

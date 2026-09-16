@@ -1,0 +1,68 @@
+data:
+  classification: true
+  dataset: graphium/tox21-v1
+  diffusion_params:
+    diffusion_type: edm
+    guidance: 1.0
+    guidance_dropout: 0.2
+    guidance_schedule: cosine
+    refinement_steps: 50
+    sigma_max: 10
+    sigma_min: 0.0001
+    self_cond_prob: 0.5
+  log_transform: false
+  name: polaris
+  standardize_targets: true
+  symmetric_binary_targets: true
+  use_benchmark: true
+experiment:
+  callbacks: []
+  check_val_freq: 10
+  console_out: true
+  debug: false
+  device: null
+  ema_decay: 0.99
+  exp_name: ${data.name}_${data.dataset}_${model.name}
+  monitor_metric: val/pr_auc
+  monitor_mode: max
+  output_dir: outputs_${experiment.exp_name}
+  seed: 0
+  tune: false
+  tuning_n_trials: 50
+  save_last_ckpt: False
+  use_ema_on_test: true
+  use_last_ckpt: false
+  wandb_mode: null
+model:
+  featurizer: graph
+  hparams:
+    net_type: graphormer
+    graphormer_num_layers: 3
+    graphormer_num_heads: 8
+    graphormer_ffn_embed_dim: 128
+    graphormer_edge_type: multi_hop
+    graphormer_multi_hop_max_dist: 5
+    arch_type: baseline
+    pooling: sum
+    activation: silu
+    dropout: 0
+    batch_norm: false
+    hidden_dim: 128
+    embedding_dim: 128
+    num_hiddens: 3
+    output_mlp_type: linear
+    feature_hiddens:
+    - 128
+    cond_config:
+      fusion_gating: false
+      fusion_loc: pre-branch
+      fusion_type: add
+      use_timestep_gating: true
+  name: gnn
+  training:
+    batch_size: 128
+    loss_weights: true
+    shuffle_train: true
+    lr: 2e-4
+    num_pred_samples: 200
+    max_epochs: 400

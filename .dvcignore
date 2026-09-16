@@ -1,0 +1,15 @@
+# Python and editor state
+.venv/
+**/__pycache__/
+.ipynb_checkpoints/
+
+# Runtime logs and experiment side outputs not managed by this DVC pipeline
+wandb/
+lightning_logs/
+/outputs_*/
+/outputs/
+/multirun/
+
+# Temporary visualization scratch outputs
+test_out_viz/
+test_out_viz_all/
