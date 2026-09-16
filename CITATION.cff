@@ -4,7 +4,7 @@ type: software
 title: "DiffPred"
 abstract: >-
   DiffPred is a research codebase for diffusion-based molecular property
-  prediction, accompanying the manuscript title "Improving Molecular Property Prediction with Score-based Diffusion Models".Experiments are configured with Hydra and
+  prediction, accompanying the manuscript titled "Improving Molecular Property Prediction with Score-based Diffusion Models". Experiments are configured with Hydra and
   orchestrated as DVC pipelines for reproducibility.
 authors:
   - family-names: Horwood
